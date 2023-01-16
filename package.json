@@ -2,10 +2,13 @@
   "name": "cinny",
   "version": "2.2.3",
   "description": "Yet another matrix client",
+  "type": "module",
   "main": "index.js",
   "engines": {
     "node": ">=16.0.0"
   },
+
+    
   "scripts": {
     "start": "vite",
     "build": "vite build",
@@ -64,6 +67,7 @@
     "eslint-plugin-jsx-a11y": "6.6.1",
     "eslint-plugin-react": "7.31.11",
     "eslint-plugin-react-hooks": "4.6.0",
+    "internal-ip": "7.0.0",
     "mini-svg-data-uri": "1.4.4",
     "prettier": "2.8.1",
     "sass": "1.56.2",
