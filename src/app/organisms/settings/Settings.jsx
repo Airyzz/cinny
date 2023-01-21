@@ -222,10 +222,15 @@ function SecuritySection() {
 }
 
 function AboutSection() {
+  let text = "Application"
+  if(window.__TAURI__ !== undefined) {
+    text = "Application - Tauri"
+  }
+
   return (
     <div className="settings-about">
       <div className="settings-about__card">
-        <MenuHeader>Application</MenuHeader>
+        <MenuHeader>{ text }</MenuHeader>
         <div className="settings-about__branding">
           <img width="60" height="60" src={CinnySVG} alt="Cinny logo" />
           <div>

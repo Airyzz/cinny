@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import appDispatcher from '../dispatcher';
 import cons from './cons';
+import { emit, listen } from '@tauri-apps/api/event'
 
 class Navigation extends EventEmitter {
   constructor() {
@@ -20,8 +21,16 @@ class Navigation extends EventEmitter {
 
     this.rawModelStack = [];
 
+    this.listen_for_event()
+
     document.addEventListener('backbutton', this._onBackButton.bind(this) )
     document.addEventListener('keyup', this._simulateBackButton.bind(this), false);
+  }
+
+  async listen_for_event(){
+    const unlisten = await listen('tauri-event', (event) => {
+      this._onBackButton(event)
+    })
   }
 
   _simulateBackButton(e){
