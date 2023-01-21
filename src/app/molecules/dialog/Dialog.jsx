@@ -9,11 +9,19 @@ import Header, { TitleWrapper } from '../../atoms/header/Header';
 import ScrollView from '../../atoms/scroll/ScrollView';
 import RawModal from '../../atoms/modal/RawModal';
 
+import cons from '../../../client/state/cons';
+import navigation from '../../../client/state/navigation';
+
 function Dialog({
   className, isOpen, title, onAfterOpen, onAfterClose,
   contentOptions, onRequestClose, closeFromOutside, children,
   invisibleScroll,
 }) {
+
+  navigation.on(cons.events.navigation.BACK_BUTTON, () => {
+    onRequestClose()
+  })
+
   return (
     <RawModal
       className={`${className === null ? '' : `${className} `}dialog-modal`}

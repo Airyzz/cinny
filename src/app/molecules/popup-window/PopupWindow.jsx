@@ -10,8 +10,10 @@ import { MenuItem } from '../../atoms/context-menu/ContextMenu';
 import Header, { TitleWrapper } from '../../atoms/header/Header';
 import ScrollView from '../../atoms/scroll/ScrollView';
 import RawModal from '../../atoms/modal/RawModal';
+import navigation from '../../../client/state/navigation';
 
 import ChevronLeftIC from '../../../../public/res/ic/outlined/chevron-left.svg';
+import cons from '../../../client/state/cons';
 
 function PWContentSelector({
   selected, variant, iconSrc,
@@ -55,6 +57,11 @@ function PopupWindow({
 }) {
   const haveDrawer = drawer !== null;
   const cTitle = contentTitle !== null ? contentTitle : title;
+
+  navigation.on(cons.events.navigation.BACK_BUTTON, () => {
+    console.log("BACK BUTTON EVENT")
+    onRequestClose()
+  })
 
   return (
     <RawModal

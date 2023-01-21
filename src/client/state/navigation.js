@@ -19,6 +19,26 @@ class Navigation extends EventEmitter {
     this.spaceToRoom = new Map();
 
     this.rawModelStack = [];
+
+    document.addEventListener('backbutton', this._onBackButton.bind(this) )
+    document.addEventListener('keyup', this._simulateBackButton.bind(this), false);
+  }
+
+  _simulateBackButton(e){
+    if(e.key=="ArrowLeft")
+    this._onBackButton(e)
+  }
+
+  _onBackButton(e){
+
+      if(this.isRoomSettings) {
+        this.navigate({type: cons.actions.navigation.TOGGLE_ROOM_SETTINGS})
+        return false;
+      }
+
+      this.navigate({type: cons.actions.navigation.BACK_BUTTON_CLICK});
+
+    return false
   }
 
   _addToSpacePath(roomId, asRoot) {
@@ -348,6 +368,9 @@ class Navigation extends EventEmitter {
       },
       [cons.actions.navigation.OPEN_NAVIGATION]: () => {
         this.emit(cons.events.navigation.NAVIGATION_OPENED);
+      },
+      [cons.actions.navigation.BACK_BUTTON_CLICK]: () => {
+        this.emit(cons.events.navigation.BACK_BUTTON);
       },
       [cons.actions.navigation.OPEN_EMOJIBOARD]: () => {
         this.emit(
