@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Settings.scss';
-
+import "swiper/css";
 import initMatrix from '../../../client/initMatrix';
 import cons from '../../../client/state/cons';
 import settings from '../../../client/state/settings';
@@ -44,6 +44,8 @@ import CrossIC from '../../../../public/res/ic/outlined/cross.svg';
 import CinnySVG from '../../../../public/res/svg/cinny.svg';
 import { confirmDialog } from '../../molecules/confirm-dialog/ConfirmDialog';
 
+import { Swiper, SwiperSlide } from 'swiper/react';
+
 function AppearanceSection() {
   const [, updateState] = useState({});
 
@@ -78,7 +80,7 @@ function AppearanceSection() {
                 updateState({});
               }}
             />
-        )}
+          )}
         />
       </div>
       <div className="settings-appearance__card">
@@ -167,7 +169,7 @@ function NotificationsSection() {
               isActive={settings.isNotificationSounds}
               onToggle={() => { toggleNotificationSounds(); updateState({}); }}
             />
-            )}
+          )}
           content={<Text variant="b3">Play sound when new messages arrive.</Text>}
         />
       </div>
@@ -223,14 +225,14 @@ function SecuritySection() {
 
 function AboutSection() {
   let text = "Application"
-  if(window.__TAURI__ !== undefined) {
+  if (window.__TAURI__ !== undefined) {
     text = "Application - Tauri"
   }
 
   return (
     <div className="settings-about">
       <div className="settings-about__card">
-        <MenuHeader>{ text }</MenuHeader>
+        <MenuHeader>{text}</MenuHeader>
         <div className="settings-about__branding">
           <img width="60" height="60" src={CinnySVG} alt="Cinny logo" />
           <div>
@@ -253,15 +255,15 @@ function AboutSection() {
         <div className="settings-about__credits">
           <ul>
             <li>
-              {/* eslint-disable-next-line react/jsx-one-expression-per-line */ }
+              {/* eslint-disable-next-line react/jsx-one-expression-per-line */}
               <Text>The <a href="https://github.com/matrix-org/matrix-js-sdk" rel="noreferrer noopener" target="_blank">matrix-js-sdk</a> is © <a href="https://matrix.org/foundation" rel="noreferrer noopener" target="_blank">The Matrix.org Foundation C.I.C</a> used under the terms of <a href="http://www.apache.org/licenses/LICENSE-2.0" rel="noreferrer noopener" target="_blank">Apache 2.0</a>.</Text>
             </li>
             <li>
-              {/* eslint-disable-next-line react/jsx-one-expression-per-line */ }
+              {/* eslint-disable-next-line react/jsx-one-expression-per-line */}
               <Text>The <a href="https://twemoji.twitter.com" target="_blank" rel="noreferrer noopener">Twemoji</a> emoji art is © <a href="https://twemoji.twitter.com" target="_blank" rel="noreferrer noopener">Twitter, Inc and other contributors</a> used under the terms of <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer noopener">CC-BY 4.0</a>.</Text>
             </li>
             <li>
-              {/* eslint-disable-next-line react/jsx-one-expression-per-line */ }
+              {/* eslint-disable-next-line react/jsx-one-expression-per-line */}
               <Text>The <a href="https://material.io/design/sound/sound-resources.html" target="_blank" rel="noreferrer noopener">Material sound resources</a> are © <a href="https://google.com" target="_blank" rel="noreferrer noopener">Google</a> used under the terms of <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer noopener">CC-BY 4.0</a>.</Text>
             </li>
           </ul>
@@ -328,8 +330,21 @@ function useWindowToggle(setSelectedTab) {
 function Settings() {
   const [selectedTab, setSelectedTab] = useState(tabItems[0]);
   const [isOpen, requestClose] = useWindowToggle(setSelectedTab);
+  const [controlledSwiper, setControlledSwiper] = useState(null);
 
-  const handleTabChange = (tabItem) => setSelectedTab(tabItem);
+  const handleTabChange = (tabItem) => {
+    
+    setSelectedTab(tabItem);
+    console.log(tabItem);
+
+    let index = tabItems.findIndex((tab) => tab.text === tabItem.text)
+    console.log(index)
+
+    console.log(controlledSwiper)
+    controlledSwiper.slideTo(index)
+
+  }
+
   const handleLogout = async () => {
     if (await confirmDialog('Logout', 'Are you sure that you want to logout your session?', 'Logout', 'danger')) {
       initMatrix.logout();
@@ -359,8 +374,15 @@ function Settings() {
             defaultSelected={tabItems.findIndex((tab) => tab.text === selectedTab.text)}
             onSelect={handleTabChange}
           />
+
           <div className="settings-window__cards-wrapper">
-            { selectedTab.render() }
+          <Swiper autoHeight={true} onAfterInit={setControlledSwiper}className='my-swiper'>
+            {
+              tabItems.map((item, index) => (
+                <SwiperSlide key={item.text}> {item.render()} </SwiperSlide>
+              ))
+            }
+          </Swiper>
           </div>
         </div>
       )}

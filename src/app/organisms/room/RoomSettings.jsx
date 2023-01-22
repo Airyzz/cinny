@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import './RoomSettings.scss';
+import "swiper/css";
 
 import { blurOnBubbling } from '../../atoms/button/script';
 
@@ -39,6 +40,8 @@ import ChevronTopIC from '../../../../public/res/ic/outlined/chevron-top.svg';
 
 import { useForceUpdate } from '../../hooks/useForceUpdate';
 import { confirmDialog } from '../../molecules/confirm-dialog/ConfirmDialog';
+
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 const tabText = {
   GENERAL: 'General',
@@ -150,9 +153,14 @@ function RoomSettings({ roomId }) {
   const [, forceUpdate] = useForceUpdate();
   const [selectedTab, setSelectedTab] = useState(tabItems[0]);
   const room = initMatrix.matrixClient.getRoom(roomId);
+  const [controlledSwiper, setControlledSwiper] = useState(null);
 
   const handleTabChange = (tabItem) => {
-    setSelectedTab(tabItem);
+    console.log(tabItem);
+
+    let index = tabItems.findIndex((tab) => tab.text === tabItem.text)
+
+    controlledSwiper.slideTo(index)
   };
 
   useEffect(() => {
@@ -200,14 +208,16 @@ function RoomSettings({ roomId }) {
             defaultSelected={tabItems.findIndex((tab) => tab.text === selectedTab.text)}
             onSelect={handleTabChange}
           />
-          <div className="room-settings__cards-wrapper">
-            {selectedTab.text === tabText.GENERAL && <GeneralSettings roomId={roomId} />}
-            {selectedTab.text === tabText.SEARCH && <RoomSearch roomId={roomId} />}
-            {selectedTab.text === tabText.MEMBERS && <RoomMembers roomId={roomId} />}
-            {selectedTab.text === tabText.EMOJIS && <RoomEmojis roomId={roomId} />}
-            {selectedTab.text === tabText.PERMISSIONS && <RoomPermissions roomId={roomId} />}
-            {selectedTab.text === tabText.SECURITY && <SecuritySettings roomId={roomId} />}
-          </div>
+          <Swiper autoHeight={true} cssMode={true} onAfterInit={setControlledSwiper} className='my-swiper'>
+            
+            <SwiperSlide> <GeneralSettings roomId={roomId} /> </SwiperSlide>
+            <SwiperSlide> <RoomSearch roomId={roomId} /> </SwiperSlide>
+            <SwiperSlide> <RoomMembers roomId={roomId} /> </SwiperSlide>
+            <SwiperSlide> <RoomEmojis roomId={roomId} /> </SwiperSlide>
+            <SwiperSlide> <RoomPermissions roomId={roomId} /> </SwiperSlide>
+            <SwiperSlide> <SecuritySettings roomId={roomId} /> </SwiperSlide>
+          </Swiper>
+
         </div>
       </ScrollView>
     </div>

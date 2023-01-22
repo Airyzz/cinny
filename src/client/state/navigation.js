@@ -28,7 +28,7 @@ class Navigation extends EventEmitter {
   }
 
   async listen_for_event(){
-    const unlisten = await listen('tauri-event', (event) => {
+    const unlisten = await listen(cons.events.tauri.MESSAGE_BACK_BUTTON, (event) => {
       this._onBackButton(event)
     })
   }
